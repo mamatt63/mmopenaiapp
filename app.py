@@ -13,13 +13,16 @@ client = AzureOpenAI(
   api_version="2024-02-01"
 )
 
-# Interact with GPT-3.5-turbo deployment
-response = client.chat.completions.create(
-    model="gpt-35-turbo", # model = "deployment_name".
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant. Answer like a pirate."},
-        {"role": "user", "content": "Who were the founders of Microsoft?"}
-    ]
-)
+conversation=[{"role": "system", "content": "You are a helpful assistant."}]
 
-print(response.choices[0].message.content)
+while True:
+    user_input = input("Q:")
+    conversation.append({"role": "user", "content": user_input})
+
+    response = client.chat.completions.create(
+        model="gpt-35-turbo", # model = "deployment_name".
+        messages=conversation
+    )
+
+    conversation.append({"role": "assistant", "content": response.choices[0].message.content})
+    print("\n" + response.choices[0].message.content + "\n")
